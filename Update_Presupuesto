@@ -1,0 +1,15 @@
+
+UPDATE p
+SET
+    p.Presupuesto = u.PIEZAS
+FROM
+    Pto_Cartera_May_pza p
+JOIN
+    Pto_Vendedor_2024Update u
+ON
+    p.Mes = u.MES AND
+    p.VENDEDOR = u.VENDEDOR
+WHERE
+    p.Ano = 2024 
+    
+

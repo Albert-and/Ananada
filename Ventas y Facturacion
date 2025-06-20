@@ -1,0 +1,211 @@
+
+
+
+
+
+
+
+
+
+
+----FACTURACION------------
+
+SELECT isnull(T6.baseref,'') as 'No. OV',
+T0.cardcode AS 'Cliente',
+---T0.cardname,
+T2.SlpCode AS 'Vendedor',
+T0.Doctotal,
+T0.Docnum,
+T1.seriesname,
+T3.[ItemCode] AS 'SKU',
+-----T3.[Dscription],
+T3.[Quantity],
+T3.[LineTotal],
+T0.DocDate,
+T5.ItmsGrpNam as 'Categoría',
+T4.U_Codigo as 'Segmento',
+
+CASE
+WHEN T4.QryGroup1='Y' THEN 'LINEA'
+WHEN T4.QryGroup2='Y' THEN 'MIXTO'
+WHEN T4.QryGroup3='Y' THEN 'CASA'
+END AS 'Cuadrante',
+
+CASE
+T1.SeriesName
+WHEN 'FAC' THEN 'Carrito'
+WHEN 'FAM' THEN 'Mayoreo'
+END AS 'Tipo de Venta',
+	
+CASE
+T3.[TaxCode]
+WHEN 'IVAC16' THEN T3.[LineTotal]*1.16
+WHEN 'IVAC0' THEN T3.[LineTotal]
+END AS 'Total Facturado',
+
+CASE
+T3.[TaxCode]
+WHEN 'IVAC16' THEN (T3.LineTotal-T3.Quantity*T3.GrossBuyPr)*1.16
+WHEN 'IVAC0' THEN T3.LineTotal-T3.Quantity*T3.GrossBuyPr
+END AS 'Total Ganancia'
+
+FROM OINV T0  
+INNER JOIN NNM1 T1 ON T0.[Series] = T1.[Series] 
+INNER JOIN OSLP T2 ON T0.[SlpCode] = T2.[SlpCode] 
+INNER JOIN INV1 T3 ON T0.[DocEntry] = T3.[DocEntry]
+inner join OITM T4 ON T4.itemcode=T3.Itemcode
+inner join OITB T5 ON T5.ItmsGrpCod=T4.ItmsGrpCod
+left join DLN1 T6 ON t6.ObjType=t3.basetype and t6.DocEntry=t3.baseentry and t6.LineNum=t3.BaseLine
+WHERE T0.CANCELED = 'N' AND T1.SeriesName <> 'SI' AND T0.DocDate  = '20220105' --and T3.ItemCode not like 'F%'
+
+UNION ALL
+
+SELECT isnull(T6.baseref,'')as 'No. OV',
+T0.cardcode AS 'Cliente',
+---T0.cardname,
+T2.SlpCode AS 'Vendedor',
+T0.Doctotal,
+T0.Docnum,
+T1.seriesname,
+T3.[ItemCode] AS 'SKU',
+-----T3.[Dscription],
+T3.[Quantity],
+T3.[LineTotal],
+T0.DocDate,
+T5.ItmsGrpNam as 'Categoría',
+T4.U_Codigo as 'Segmento',
+
+CASE
+WHEN T4.QryGroup1='Y' THEN 'LINEA'
+WHEN T4.QryGroup2='Y' THEN 'MIXTO'
+WHEN T4.QryGroup3='Y' THEN 'CASA'
+END AS 'Cuadrante',
+
+CASE
+T1.SeriesName
+WHEN 'NC' THEN 'Carrito'
+WHEN 'NM' THEN 'Mayoreo'
+END AS 'Tipo de Venta',
+
+CASE
+T3.[TaxCode]
+WHEN 'IVAC16' THEN (T3.[LineTotal]*1.16)*-1
+WHEN 'IVAC0' THEN T3.[LineTotal]
+END AS 'Total Facturado',
+
+CASE
+T3.[TaxCode]
+WHEN 'IVAC16' THEN (T3.LineTotal-T3.Quantity*T3.GrossBuyPr)*1.16*-1
+WHEN 'IVAC0' THEN (T3.LineTotal-T3.Quantity*T3.GrossBuyPr)*-1
+END AS 'Total Ganancia'
+
+FROM ORIN T0
+INNER JOIN NNM1 T1 ON T0.[Series] = T1.[Series] 
+INNER JOIN OSLP T2 ON T0.[SlpCode] = T2.[SlpCode] 
+INNER JOIN RIN1 T3 ON T0.[DocEntry] = T3.[DocEntry]
+inner join OITM T4 ON T4.itemcode=T3.Itemcode
+inner join OITB T5 ON T5.ItmsGrpCod=T4.ItmsGrpCod
+left join DLN1 T6 ON t6.ObjType=t3.basetype and t6.DocEntry=t3.baseentry and t6.LineNum=t3.BaseLine
+WHERE T0.CANCELED = 'N' AND T1.SeriesName <> 'SI' AND T0.DocDate = '20220105'
+
+
+
+
+
+SELECT isnull(T6.baseref,'') as 'No. OV',
+T0.cardcode AS 'Cliente',
+---T0.cardname,
+T2.SlpCode AS 'Vendedor',
+T0.Doctotal,
+T0.Docnum,
+T1.seriesname,
+T3.[ItemCode] AS 'SKU',
+-----T3.[Dscription],
+T3.[Quantity],
+T3.[LineTotal],
+T0.DocDate,
+T5.ItmsGrpNam as 'Categoría',
+T4.U_Codigo as 'Segmento',
+
+CASE
+WHEN T4.QryGroup1='Y' THEN 'LINEA'
+WHEN T4.QryGroup2='Y' THEN 'MIXTO'
+WHEN T4.QryGroup3='Y' THEN 'CASA'
+END AS 'Cuadrante',
+
+CASE
+T1.SeriesName
+WHEN 'FAC' THEN 'Carrito'
+WHEN 'FAM' THEN 'Mayoreo'
+END AS 'Tipo de Venta',
+	
+CASE
+T3.[TaxCode]
+WHEN 'IVAC16' THEN T3.[LineTotal]*1.16
+WHEN 'IVAC0' THEN T3.[LineTotal]
+END AS 'Total Facturado',
+
+CASE
+T3.[TaxCode]
+WHEN 'IVAC16' THEN (T3.LineTotal-T3.Quantity*T3.GrossBuyPr)*1.16
+WHEN 'IVAC0' THEN T3.LineTotal-T3.Quantity*T3.GrossBuyPr
+END AS 'Total Ganancia'
+
+FROM OINV T0  
+INNER JOIN NNM1 T1 ON T0.[Series] = T1.[Series] 
+INNER JOIN OSLP T2 ON T0.[SlpCode] = T2.[SlpCode] 
+INNER JOIN INV1 T3 ON T0.[DocEntry] = T3.[DocEntry]
+inner join OITM T4 ON T4.itemcode=T3.Itemcode
+inner join OITB T5 ON T5.ItmsGrpCod=T4.ItmsGrpCod
+left join DLN1 T6 ON t6.ObjType=t3.basetype and t6.DocEntry=t3.baseentry and t6.LineNum=t3.BaseLine
+WHERE T0.CANCELED = 'N' AND T1.SeriesName <> 'SI' AND T0.DocDate  >= '20220101' --and T3.ItemCode not like 'F%'
+
+UNION ALL
+
+SELECT isnull(T6.baseref,'')as 'No. OV',
+T0.cardcode AS 'Cliente',
+---T0.cardname,
+T2.SlpCode AS 'Vendedor',
+T0.Doctotal,
+T0.Docnum,
+T1.seriesname,
+T3.[ItemCode] AS 'SKU',
+-----T3.[Dscription],
+T3.[Quantity],
+T3.[LineTotal],
+T0.DocDate,
+T5.ItmsGrpNam as 'Categoría',
+T4.U_Codigo as 'Segmento',
+
+CASE
+WHEN T4.QryGroup1='Y' THEN 'LINEA'
+WHEN T4.QryGroup2='Y' THEN 'MIXTO'
+WHEN T4.QryGroup3='Y' THEN 'CASA'
+END AS 'Cuadrante',
+
+CASE
+T1.SeriesName
+WHEN 'NC' THEN 'Carrito'
+WHEN 'NM' THEN 'Mayoreo'
+END AS 'Tipo de Venta',
+
+CASE
+T3.[TaxCode]
+WHEN 'IVAC16' THEN (T3.[LineTotal]*1.16)*-1
+WHEN 'IVAC0' THEN T3.[LineTotal]
+END AS 'Total Facturado',
+
+CASE
+T3.[TaxCode]
+WHEN 'IVAC16' THEN (T3.LineTotal-T3.Quantity*T3.GrossBuyPr)*1.16*-1
+WHEN 'IVAC0' THEN (T3.LineTotal-T3.Quantity*T3.GrossBuyPr)*-1
+END AS 'Total Ganancia'
+
+FROM ORIN T0
+INNER JOIN NNM1 T1 ON T0.[Series] = T1.[Series] 
+INNER JOIN OSLP T2 ON T0.[SlpCode] = T2.[SlpCode] 
+INNER JOIN RIN1 T3 ON T0.[DocEntry] = T3.[DocEntry]
+inner join OITM T4 ON T4.itemcode=T3.Itemcode
+inner join OITB T5 ON T5.ItmsGrpCod=T4.ItmsGrpCod
+left join DLN1 T6 ON t6.ObjType=t3.basetype and t6.DocEntry=t3.baseentry and t6.LineNum=t3.BaseLine
+WHERE T0.CANCELED = 'N' AND T1.SeriesName <> 'SI' AND T0.DocDate = '20220101'

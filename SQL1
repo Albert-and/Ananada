@@ -1,0 +1,159 @@
+
+---OV Flujo---------
+
+SELECT T1.DocEntry, T1.DocNum, T1.Canceled, T1.DocDate,
+T1.CardCode, T1.CardName, T1.DocTotal,
+(select top 1 Descr from UFD1 where FieldID = 29 and fldvalue = T1.U_EstatusOV
+and TableID = 'ORDR'
+group by FieldID, indexid, fldvalue, Descr) AS 'Estatus ANANDA',
+ T2.SlpName
+FROM ORDR T1
+LEFT JOIN OSLP T2 ON T1.SlpCode = T2.SlpCode
+WHERE series <> '76' AND T1.DocDate BETWEEN '01/01/2022' AND '12/31/2022'
+
+------ Entrega Flujo-----
+
+SELECT DISTINCT T1.BaseRef [No. OV], T0.DocEntry, T0.DocNum,
+T0.DocStatus, T0.DocDate, T0.DocTotal, T0.CardCode, T0.CardName, t2.SlpName
+FROM ODLN T0
+inner JOIN DLN1 T1 ON T0.DocEntry = T1.DocEntry
+left JOIN OSLP T2 ON T0.SlpCode = T2.SlpCode
+WHERE t0.CANCELED = 'N' and (t1.BaseRef <> 'null' and t1.BaseRef <>' ') 
+AND T0.DocDate BETWEEN '01/01/2022' AND '12/31/2022'
+
+--- Index_Fact Flujo-------
+
+SELECT DISTINCT T0.DocEntry [No. Interno], T0.DocNum [No. Factura],
+T3.DocNum [No. Entrega], T6.DocNum [No. OV],
+T0.DocDate [Fecha], T0.CardCode [Cliente], T0.CardName [Nombre], T0.DocTotal [Total Facturado],
+T0.DocStatus [Estatus de Documento], T2.SlpName [Vendedor],
+CASE
+T7.SeriesName
+WHEN 'FAC' THEN 'Carrito'
+WHEN 'FAM' THEN 'Mayoreo'
+WHEN 'NC' THEN 'Carrito'
+WHEN 'NM' THEN 'Mayoreo'
+END AS 'Tipo de Venta',(T0.GrosProfit*1.16) as 'Ganancía',round((T0.GrosProfit*1.16)/nullif((T0.DocTotal),0),5) as 'Rentabilidad'
+FROM ORDR T6
+
+inner JOIN RDR1 T5 ON T5.DocEntry = T6.DocEntry 
+
+LEFT JOIN DLN1 T4 ON t5.ObjType=t4.basetype and t5.DocEntry=t4.baseentry and t5.LineNum=t4.BaseLine
+inner JOIN ODLN T3 ON T3.DocEntry = T4.DocEntry 
+
+LEFT JOIN INV1 T1 ON t4.ObjType=t1.basetype and t4.DocEntry=t1.baseentry and t4.LineNum=t1.BaseLine
+inner JOIN OINV T0 ON T0.DocEntry = T1.DocEntry 
+
+LEFT JOIN OSLP T2 ON T0.SlpCode = T2.SlpCode
+INNER JOIN NNM1 T7 ON T7.[Series] = T0.[Series] 
+WHERE T0.SERIES <> '75' AND T0.CANCELED = 'N' AND T0.DocDate >='20210101'
+group by T0.DocEntry , T0.DocNum ,
+T1.BaseRef , T6.DOCNUM ,
+T0.DocDate , T0.CardCode, T0.CardName , T0.DocTotal, 
+T0.DocStatus , T2.SlpName,T7.SeriesName,T0.GrosProfit,t3.DocNum
+union all  
+SELECT DISTINCT T0.DocEntry [No. Interno], T0.DocNum [No. Factura],
+T1.BaseRef [No. Entrega], T4.BaseRef [No. OV],
+T0.DocDate [Fecha], T0.CardCode [Cliente], T0.CardName [Nombre], 
+(T0.DocTotal * -1) [Total Facturado],
+T0.DocStatus [Estatus de Documento], T2.SlpName [Vendedor],
+CASE
+T7.SeriesName
+WHEN 'FAC' THEN 'Carrito'
+WHEN 'FAM' THEN 'Mayoreo'
+WHEN 'NC' THEN 'Carrito'
+WHEN 'NM' THEN 'Mayoreo'
+END AS 'Tipo de Venta', (T0.GrosProfit*1.16) as 'Ganancía',round((T0.GrosProfit*1.16)/nullif((T0.DocTotal),0),5) as 'Rentabilidad'
+FROM ORIN T0 
+
+LEFT JOIN RIN1 T1 ON T0.DocEntry = T1.DocEntry
+
+LEFT JOIN OSLP T2 ON T0.SlpCode = T2.SlpCode
+
+LEFT JOIN OINV T3 ON T3.DocNum = T1.BaseRef
+
+LEFT JOIN INV1 T4 ON T4.DocEntry = T3.DocEntry
+INNER JOIN NNM1 T7 ON T7.[Series] = T0.[Series]
+WHERE T0.CANCELED = 'N' AND T0.DocDate >='20210101'
+
+group by T0.DocEntry , T0.DocNum ,
+T1.BaseRef , T4.BaseRef ,
+T0.DocDate , T0.CardCode, T0.CardName , T0.DocTotal ,
+T0.DocStatus , T2.SlpName,T7.SeriesName,T0.GrosProfit
+
+----FactCatFlujo ------------
+
+SELECT isnull(T6.baseref,'') as 'No. OV',T0.cardcode,T0.cardname,T0.Doctotal,T0.Docnum,T1.seriesname,T3.[ItemCode], T3.[Dscription], T3.[Quantity],T3.[LineTotal],T0.DocDate, T5.ItmsGrpNam as 'Categoría',T4.U_Codigo as 'Segmento',
+
+CASE
+WHEN T4.QryGroup1='Y' THEN 'LINEA'
+WHEN T4.QryGroup2='Y' THEN 'MIXTO'
+WHEN T4.QryGroup3='Y' THEN 'CASA'
+END AS 'Cuadrante',
+
+CASE
+T1.SeriesName
+WHEN 'FAC' THEN 'Carrito'
+WHEN 'FAM' THEN 'Mayoreo'
+END AS 'Tipo de Venta',
+	
+CASE
+T3.[TaxCode]
+WHEN 'IVAC16' THEN T3.[LineTotal]*1.16
+WHEN 'IVAC0' THEN T3.[LineTotal]
+END AS 'Total Facturado',
+
+CASE
+T3.[TaxCode]
+WHEN 'IVAC16' THEN (T3.LineTotal-T3.Quantity*T3.GrossBuyPr)*1.16
+WHEN 'IVAC0' THEN T3.LineTotal-T3.Quantity*T3.GrossBuyPr
+END AS 'Total Ganancia'
+
+FROM OINV T0  
+INNER JOIN NNM1 T1 ON T0.[Series] = T1.[Series] 
+INNER JOIN OSLP T2 ON T0.[SlpCode] = T2.[SlpCode] 
+INNER JOIN INV1 T3 ON T0.[DocEntry] = T3.[DocEntry]
+inner join OITM T4 ON T4.itemcode=T3.Itemcode
+inner join OITB T5 ON T5.ItmsGrpCod=T4.ItmsGrpCod
+left join DLN1 T6 ON t6.ObjType=t3.basetype and t6.DocEntry=t3.baseentry and t6.LineNum=t3.BaseLine
+WHERE T0.CANCELED = 'N' AND T1.SeriesName <> 'SI' AND T0.DocDate>='20220101' --and T3.ItemCode not like 'F%'
+
+UNION ALL
+
+SELECT isnull(T6.baseref,'')as 'No. OV',T0.cardcode,T0.cardname,T0.Doctotal,T0.Docnum,T1.seriesname,T3.[ItemCode], T3.[Dscription], T3.[Quantity]*-1, T3.[LineTotal], T0.DocDate,T5.ItmsGrpNam as 'Categoría',T4.U_Codigo as 'Segmento',
+
+CASE
+WHEN T4.QryGroup1='Y' THEN 'LINEA'
+WHEN T4.QryGroup2='Y' THEN 'MIXTO'
+WHEN T4.QryGroup3='Y' THEN 'CASA'
+END AS 'Cuadrante',
+
+CASE
+T1.SeriesName
+WHEN 'NC' THEN 'Carrito'
+WHEN 'NM' THEN 'Mayoreo'
+END AS 'Tipo de Venta',
+
+CASE
+T3.[TaxCode]
+WHEN 'IVAC16' THEN (T3.[LineTotal]*1.16)*-1
+WHEN 'IVAC0' THEN T3.[LineTotal]
+END AS 'Total Facturado',
+
+CASE
+T3.[TaxCode]
+WHEN 'IVAC16' THEN (T3.LineTotal-T3.Quantity*T3.GrossBuyPr)*1.16*-1
+WHEN 'IVAC0' THEN (T3.LineTotal-T3.Quantity*T3.GrossBuyPr)*-1
+END AS 'Total Ganancia'
+
+FROM ORIN T0
+INNER JOIN NNM1 T1 ON T0.[Series] = T1.[Series] 
+INNER JOIN OSLP T2 ON T0.[SlpCode] = T2.[SlpCode] 
+INNER JOIN RIN1 T3 ON T0.[DocEntry] = T3.[DocEntry]
+inner join OITM T4 ON T4.itemcode=T3.Itemcode
+inner join OITB T5 ON T5.ItmsGrpCod=T4.ItmsGrpCod
+left join DLN1 T6 ON t6.ObjType=t3.basetype and t6.DocEntry=t3.baseentry and t6.LineNum=t3.BaseLine
+WHERE T0.CANCELED = 'N' AND T1.SeriesName <> 'SI' AND T0.DocDate>='20220101' 
+
+
+

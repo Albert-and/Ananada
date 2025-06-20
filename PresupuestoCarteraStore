@@ -1,0 +1,29 @@
+SELECT *
+  FROM [Power_BI].[dbo].[Pto_Cartera_Store]
+  where MES = 'Noviembre'
+
+
+
+  INSERT INTO [Power_BI].[dbo].[Pto_Cartera_Store] (AÑO,MES,Día,[TIPO DE VENTA],VENDEDOR,[CLIENTES ACTIVOS],PRESUPUESTO)
+  VALUES    ('2002','Noviembre','2022-11-30','carrito','Ana Vivanco','35','3188528')
+
+  
+  INSERT INTO [Power_BI].[dbo].[Pto_Cartera_Store] (AÑO,MES,Día,[TIPO DE VENTA],VENDEDOR,[CLIENTES ACTIVOS],PRESUPUESTO)
+  VALUES    ('2002','Noviembre','2022-11-30','carrito','Karla Brito','86','2332400')
+
+    INSERT INTO [Power_BI].[dbo].[Pto_Cartera_Store] (AÑO,MES,Día,[TIPO DE VENTA],VENDEDOR,[CLIENTES ACTIVOS],PRESUPUESTO)
+  VALUES    ('2002','Noviembre','2022-11-30','carrito','Jazmín Vieyra','161','1573600')
+
+      INSERT INTO [Power_BI].[dbo].[Pto_Cartera_Store] (AÑO,MES,Día,[TIPO DE VENTA],VENDEDOR,[CLIENTES ACTIVOS],PRESUPUESTO)
+  VALUES    ('2002','Noviembre','2022-11-30','carrito','Rosario Ricaño Velazquez','160','900000')
+
+
+      INSERT INTO [Power_BI].[dbo].[Pto_Cartera_Store] (AÑO,MES,Día,[TIPO DE VENTA],VENDEDOR,[CLIENTES ACTIVOS],PRESUPUESTO)
+  VALUES    ('2002','Noviembre','2022-11-30','carrito','Jose Antonio Ramirez','405','770000')
+
+  ------------
+        INSERT INTO [Power_BI].[dbo].[Pto_Cartera_Store] (AÑO,MES,Día,[TIPO DE VENTA],VENDEDOR,[CLIENTES ACTIVOS],PRESUPUESTO)
+  VALUES    ('2002','Noviembre','2022-11-30','carrito','Alejandro Mendez','3','700000')
+
+          INSERT INTO [Power_BI].[dbo].[Pto_Cartera_Store] (AÑO,MES,Día,[TIPO DE VENTA],VENDEDOR,[CLIENTES ACTIVOS],PRESUPUESTO)
+  VALUES    ('2002','Noviembre','2022-11-30','carrito','Rosalba Ruiz','100','600000')

@@ -1,0 +1,38 @@
+
+
+
+-----OV-----
+
+SELECT
+eo.DocNum AS 'No. Ov',
+eo.CardCode AS 'Cliente',
+eo.NumAtCard AS 'ID ecommerce',
+eo.DocDate AS 'Fecha OV',
+eo.SlpCode AS 'Vendedor',
+eo.U_EstatusOV AS 'Estatus',
+do.ItemCode AS 'SKU',
+do.Quantity AS 'Cantidad',
+do.Price AS 'Precio',
+do.TaxCode AS 'Impuesto'
+FROM ORDR eo
+INNER JOIN RDR1 do ON eo.DocEntry = do.DocEntry
+WHERE eo.DocDate >= '01-01-2023' AND eo.CANCELED = 'N'
+
+---Entrega----
+
+
+SELECT
+ee.DocNum AS 'No. Entrega',
+ee.CardCode AS 'Cliente',
+ee.DocDate AS 'Fecha entrega',
+ee.DocDueDate AS 'Fecha Planificada',
+ee.U_FechaVerif AS 'Fecha Verificado',
+ee.U_HoraVerif AS 'Hora Verificado',
+ee.U_EstatusOV AS 'Estatus',
+de.ItemCode AS 'SKU',
+de.Quantity AS 'Cantidad',
+de.Price AS 'Precio',
+de.BaseDocNum AS 'No. Ov'  
+FROM ODLN ee
+INNER JOIN DLN1 de ON ee.DocEntry = de.DocEntry
+WHERE ee.DocDate >= '01-01-2023' AND ee.CANCELED = 'N'
