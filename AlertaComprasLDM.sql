@@ -1,0 +1,42 @@
+
+SELECT
+    i.ItemCode AS 'Sku',
+    i.ItemName AS 'Articulo',
+    CAST(i.ValidComm AS int) AS 'MinimoStock',
+    CAST(a.OnHand AS int) AS 'Stock',
+    (CAST(a.OnHand AS int) - CAST(i.ValidComm AS int)) AS 'Diferencia',
+    CASE
+        WHEN (CAST(a.OnHand AS int) - CAST(i.ValidComm AS int)) = 0 THEN 'Comprar'
+        ELSE 'No se requiere compra'
+    END AS 'AlertaCompra'
+FROM
+    OITM i
+INNER JOIN
+    OITW a ON a.ItemCode = i.ItemCode
+WHERE
+    a.WhsCode = 'ALPM' AND i.ValidComm IS NOT NULL;
+
+
+
+
+SELECT
+    i.ItemCode AS 'Sku',
+    i.ItemName AS 'Articulo',
+    CAST(i.ValidComm AS int) AS 'MinimoStock',
+    CAST(a.OnHand AS int) AS 'Stock',
+    (CAST(a.OnHand AS int) - CAST(i.ValidComm AS int)) AS 'Diferencia',
+    CASE
+        WHEN (CAST(a.OnHand AS int) - CAST(i.ValidComm AS int)) = 0 THEN 'Comprar'
+        ELSE 'No se requiere compra'
+    END AS 'AlertaCompra'
+FROM
+    OITM i
+INNER JOIN
+    OITW a ON a.ItemCode = i.ItemCode
+WHERE
+    a.WhsCode = 'ALPM' AND a.OnHand > 0
+
+
+
+
+

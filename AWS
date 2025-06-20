@@ -1,0 +1,186 @@
+SELECT
+ItemCode,
+CardCode
+FROM OITM
+Where ItmsGrpCod IN (101,102)
+AND CardCode IS NULL
+
+
+
+
+
+
+
+Select
+ItemCode,
+ItemName,
+U_ReqMaq as Maquila,
+U_Clasificacion as Clasificacion,
+U_TipoProv as TipoProveedor,
+U_CLASIF_STORE as Proveedor,
+U_codigo as Categoria
+from OITM
+WHERE ItmsGrpCod IN (101,102)
+
+
+
+
+
+
+
+SELECT
+DocNum,
+CardCode,
+DocDate,
+DocDueDate
+FROM ORDR
+WHERE Series = 9
+
+
+
+
+
+
+SELECT
+DocNum,
+CardCode,
+DocDate,
+DocDueDate
+FROM OPOR
+WHERE Series = 9
+
+
+
+SELECT *
+  FROM [ANANDA_MAYOREO].[dbo].[@SEGMENTOS]
+
+
+
+
+
+
+
+Select
+ItemCode,
+ItemName,
+U_ReqMaq as Maquila,
+U_Clasificacion as Clasificacion,
+U_TipoProv as TipoProveedor,
+U_CLASIF_STORE as Proveedor,
+U_codigo as Categoria
+from OITM
+WHERE ItmsGrpCod IN (101,102)
+
+
+
+
+SELECT 
+    T0.DocNum AS 'Número de Documento',
+    T0.Series,
+    T1.ItemCode AS 'Código de Artículo',
+    T1.Dscription AS 'Descripción del Artículo',
+    T1.Quantity AS 'Cantidad Solicitada',
+    T2.SalPackUn AS 'Cantidad por Empaque de Ventas'
+FROM 
+    ORDR T0 -- Cabecera de la Orden de Venta
+    INNER JOIN RDR1 T1 ON T0.DocEntry = T1.DocEntry -- Detalle de la Orden de Venta
+    INNER JOIN OITM T2 ON T1.ItemCode = T2.ItemCode -- Datos Maestros de Artículos
+WHERE 
+T0.DocDate >= '20241217' AND
+    T1.Quantity % T2.SalPackUn <> 0 -- Verifica si la cantidad no es múltiplo del empaque de ventas
+    AND T2.SalPackUn > 0
+    AND T0.CardCode <> 'CM100136'
+    AND T0.Series <> 77
+    AND T0.DocStatus = 'O'
+
+
+
+
+
+Select *
+FROM ORDR
+where DocNum =    20001556
+
+
+
+
+
+
+
+Select
+ItemCode,
+ItemName,
+U_ReqMaq as Maquila,
+U_Clasificacion as Clasificacion,
+U_TipoProv as TipoProveedor,
+U_CLASIF_STORE as Proveedor,
+U_codigo as Categoria,
+U_Componente1 as Componente1,
+U_Componente2 as Componente2,
+U_Componente3 as Componente3,
+U_Componente4 as Componente4,
+U_Componente5 as Componente5,
+U_Componente6 as Componente6,
+U_Componente7 as Componente7,
+U_Componente8 as Componente8
+from OITM
+WHERE ItmsGrpCod IN (101,102)
+AND U_ReqMaq IS NOT NULL
+AND U_Componente1 IS NOT NULL
+
+
+
+
+
+Select
+ItemCode,
+ItemName,
+U_ReqMaq as Maquila,
+U_Clasificacion as Clasificacion,
+U_TipoProv as TipoProveedor,
+U_CLASIF_STORE as Proveedor,
+U_codigo as Categoria,
+U_Componente1 as Componente1,
+U_Componente2 as Componente2,
+U_Componente3 as Componente3,
+U_Componente4 as Componente4,
+U_Componente5 as Componente5,
+U_Componente6 as Componente6,
+U_Componente7 as Componente7,
+U_Componente8 as Componente8
+from OITM
+WHERE ItmsGrpCod IN (101,102)
+AND U_ReqMaq = 'Sí'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

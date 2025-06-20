@@ -1,0 +1,5 @@
+
+
+SELECT
+DocNum
+FROM ORDR

@@ -1,0 +1,92 @@
+
+SELECT
+d.DocDate AS "Fecha Pago",
+ d.DocNum AS "No.Pago",
+ d.CardName AS "Cliente",
+ d.Ref2 as "Referencia Control",
+ c.SumApplied AS "Monto Pagado",
+ f.DocNum AS "Factura",
+ f.SlpCode as "Vendedor",
+ f.DocDate as "Fecha Factura",
+ f.DocDueDate as "Fecha Vencimiento",
+ f.DocTotal as "Monto Factura",
+ f.NumAtCard as "ID OV"
+FROM ORCT d
+INNER JOIN RCT2 c ON d.DocEntry = c.DocNum
+INner JOIN OINV f ON c.DocEntry = f.DocEntry
+Where d.DocNum = 72614 ORDER BY  d.DocNum desc
+
+
+-------------------------
+
+SELECT
+d.DocNum AS "No.Pago",
+d.DocDate AS "Fecha Pago",
+ d.CardCode as "No. Cliente",
+ d.CardName AS "Cliente",
+ d.Ref2 as "Referencia Control",
+ c.SumApplied AS "Monto Pagado",
+ f.DocNum AS "Factura",
+ f.SlpCode as "Vendedor",
+ f.DocDate as "Fecha Factura",
+ f.DocDueDate as "Fecha Vencimiento",
+ f.DocTotal as "Monto Factura",
+ f.NumAtCard as "ID OV"
+FROM ORCT d
+INNER JOIN RCT2 c ON d.DocEntry = c.DocNum
+INner JOIN OINV f ON c.DocEntry = f.DocEntry
+Where f.DocDate >= '20230101'  ORDER BY f.DocDate, f.DocNum DESC
+
+
+---------
+SELECT
+d.DocDate AS "Fecha Pago",
+ d.DocNum AS "No.Pago",
+ d.CardCode as "NO. cliente",
+ d.CardName AS "Cliente",
+ d.Ref2 as "Referencia Control",
+ c.SumApplied AS "Monto Pagado",
+ f.DocNum AS "Factura",
+ f.SlpCode as "Vendedor",
+ f.DocDate as "Fecha Factura",
+ f.DocDueDate as "Fecha Vencimiento",
+ d.DocTotal as "Monto Pagado",
+ f.NumAtCard as "ID OV"
+FROM ORCT d
+INNER JOIN RCT2 c ON d.DocEntry = c.DocNum
+INner JOIN OINV f ON c.DocEntry = f.DocEntry
+Where d.DocNum =  95737
+
+
+
+
+
+
+SELECT
+DocNum,
+DocDate,
+CardCode,
+NumAtCard,
+DocTotal,
+Comments,
+JrnlMemo
+FROM ORIN
+Where CANCELED = 'N'
+
+
+
+
+Select 
+    f.DocNum AS "No. Factura",
+    f.DocDate AS "Fecha Factura",
+    f.DocDueDate as "Fecha Vencimiento",
+    f.CardCode as "No. Cliente",
+    f.CardName as "Nombre Cliente",
+    f.DocTotal as "Total Facturado",
+    e.SlpName as "Vendedor",
+    o.DocNum as "OV"
+FROM OINV f
+INNER JOIN OSLP e ON e.SlpCode = f.SlpCode
+INNER JOIN ORDR o ON f.DocEntry = o.DocEntry
+Where f.CANCELED = 'N'
+

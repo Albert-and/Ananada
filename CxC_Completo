@@ -1,0 +1,554 @@
+DECLARE @FECHA AS DATETIME
+
+DECLARE @CLIENTE AS VARCHAR (100)
+
+DECLARE @VENDEDOR AS VARCHAR (50)
+
+DECLARE @MONEDA AS VARCHAR (5)
+
+SELECT @FECHA = T0.[DocDate] FROM OINV T0 WHERE T0.DocDate =getdate()
+
+SET @FECHA = CONVERT(DATETIME, getdate(), 112)
+
+SET @FECHA = CONVERT(DATETIME, @FECHA, 112)
+
+SET @VENDEDOR = ' '
+
+SET @MONEDA = ' '
+
+SELECT a.Cliente,
+
+a.CardName,
+
+case when a.moneda = 'mxp' then a.Total else a.Total / a.Tcambio end as 'Total' ,
+
+case when a.moneda = 'mxp' then (a.vencer - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.vencer - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc /a.Tcambio),0) + coalesce((a.nc_rec /a.Tcambio),0) ) ) end as 'Al Corriente',
+
+case when a.moneda = 'mxp' then ( a.a - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.a - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as '30 Dias' ,
+
+case when a.moneda = 'mxp' then ( a.b - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.b - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio) ,0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as '60 Dias',
+
+case when a.moneda = 'mxp' then (a.c - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.c - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as '90 Dias' ,
+
+case when a.moneda = 'mxp' then (a.d - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.d - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as '120 Dias',
+
+case when a.moneda = 'mxp' then (a.e - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.e - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as ' Mas de 120 Dias' ,
+
+coalesce(case when a.moneda = 'mxp' then (a.vencer - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.vencer - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc /a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then ( a.a - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.a - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then ( a.b - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.b - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio) ,0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then (a.c - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.c - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then (a.d - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.d - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then (a.e - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.e - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end,0) as 'Saldo'
+
+FROM
+
+(SELECT T0.[DocCur] as 'Moneda',
+
+T0.CardCode as 'Cliente' ,
+
+T0.CardName ,
+
+T1.GroupNum,
+
+T0.[DocRate] as 'Tcambio' ,
+
+case WHEN T0.[DocCur] <> 'MXP' THEN ((T0.[DocTotal]-PaidSys )* T0.[DocRate])
+
+ELSE T0.DocTotal-PaidSys END as 'Total' ,
+
+null as 'Pagado',
+
+-- Notas de Credito
+
+null as 'nc' ,
+
+(SELECT sum(T0x.[ReconSum]) FROM ITR1 T0x INNER JOIN OITR T1x ON T0x.ReconNum = T1x.ReconNum
+
+WHERE T0x.[SrcObjTyp] = 13 and T0x.[SrcObjAbs] = T0.docentry and T1x.IsCard='C' AND T1x.[ReconDate] <= @FECHA ) as 'nc_rec' ,
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) < 1 then
+
+case when T0.[DocCur] = 'MXP'
+
+Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys end end as 'vencer ' ,
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 1 and
+
+DATEDIFF(day,T0.DocDueDate , @FECHA) < = 30 then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys
+
+end end as 'a' ,
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 31 and
+
+DATEDIFF(day,T0.DocDueDate , @FECHA) < = 60
+
+then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys end end as 'b ',
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 61 and
+
+DATEDIFF(day,T0.DocDueDate , @FECHA) < = 90
+
+then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-Paidsys ELSE T0.[DocTotal]-paidsys end end as 'c',
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 91 and
+
+DATEDIFF(day,T0.DocDueDate , @FECHA ) < = 120
+
+then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys end end as 'd',
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 121
+
+then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys end end as 'e '
+
+FROM OINV T0 INNER JOIN OCRD T1 ON T0.CardCode = T1.CardCode
+
+INNER JOIN OSLP T2 ON T0.SlpCode = T2.SlpCode
+
+WHERE T0.DocDate <= @FECHA
+
+) a
+
+LEFT JOIN
+
+--- Saldo Polizas
+
+(select z.Saldo as 'PSaldo',
+
+z.PCliente ,
+
+x.PPagos,
+
+(z.Saldo + coalesce(x.PPagos,0)) as 'Saldo'
+
+from
+
+(SELECT SUM(T0.[Credit]) AS 'Saldo',
+
+T0.[ShortName] AS 'PCliente'
+
+FROM JDT1 T0 INNER JOIN OJDT T1 ON T0.TransId = T1.TransId, OCRD T2
+
+WHERE T1.[TransType] = 30 and T0.[ShortName] = T2.[CardCode]
+
+and T2.[CardType] = 'S' AND T0.[Debit] >= 1
+
+--AND ( T0.[MthDate] IS NULL OR T0.[MthDate] > @FECHA )
+
+and T0.[RefDate] <= @FECHA
+
+GROUP BY T0.[ShortName] ) z
+
+left join
+
+(SELECT SUM(T11.[SumApplied])AS 'PPagos' ,
+
+T10.[CardCode] as 'PPCliente'
+
+FROM ORCT T10 INNER JOIN RCT2 T11 ON T10.DocEntry = T11.DocNum
+
+WHERE T11.[InvType] = 30 and T10.[Canceled] = 'n'
+
+AND T11.[SumApplied] <= -1 AND T10.DocDate <= @FECHA
+
+GROUP BY T10.[CardCode]) x
+
+ON Z.PCliente = x.PPCliente
+
+) b
+
+ON a.Cliente = b.PCliente
+
+WHERE (a.Total - coalesce(a.Pagado,0) - coalesce(a.nc,0) - coalesce(a.nc_rec,0) ) >= 0.30
+
+order by 1,4
+
+==============================================
+--------Opcion 2---
+
+select t1.CardCode,t0.ref1, t0.BalDueDeb,t0.BalDueCred,BalFcCred,t0.BalFcDeb, t0.TransType, t0.DueDate
+
+from dbo.JDT1 T0 with(nolock)
+
+INNER JOIN
+
+dbo.OCRD T1 with(nolock)
+
+ON T0.shortname = T1.cardcode
+
+and T1.cardtype = 'c'
+
+where T0.intrnmatch = '0 'and
+
+T0.BALDUEDEB != T0.BALDUECRED and
+
+t1.CardCode not in (select a.cliente
+
+from (select t1.cardcode as 'cliente', sum(t0.BalDueDeb)-sum(t0.BalDueCred) as 'saldo'
+
+from dbo.JDT1 T0 with(nolock) INNER JOIN
+
+dbo.OCRD T1 with(nolock) ON T0.shortname = T1.cardcode and
+
+T1.cardtype = 'c'
+
+where T0.intrnmatch = '0' and
+
+T0.BALDUEDEB != T0.BALDUECRED
+
+Group by t1.CardCode) a
+
+where a.saldo=0)
+
+order by 1,2
+
+======================
+
+
+DECLARE @FECHA AS DATETIME
+
+DECLARE @CLIENTE AS VARCHAR (100)
+
+DECLARE @VENDEDOR AS VARCHAR (50)
+
+DECLARE @MONEDA AS VARCHAR (5)
+
+SELECT @FECHA = T0.[DocDate] FROM OINV T0 WHERE T0.DocDate =getdate()
+
+SET @FECHA = CONVERT(DATETIME, getdate(), 112)
+
+SET @FECHA = CONVERT(DATETIME, @FECHA, 112)
+
+SET @VENDEDOR = ' '
+
+SET @MONEDA = ' '
+
+SELECT a.Cliente,
+
+a.CardName,
+
+case when a.moneda = 'mxp' then a.Total else a.Total / a.Tcambio end as 'Total' ,
+
+case when a.moneda = 'mxp' then (a.vencer - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.vencer - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc /a.Tcambio),0) + coalesce((a.nc_rec /a.Tcambio),0) ) ) end as 'Al Corriente',
+
+case when a.moneda = 'mxp' then ( a.a - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.a - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as '30 Dias' ,
+
+case when a.moneda = 'mxp' then ( a.b - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.b - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio) ,0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as '60 Dias',
+
+case when a.moneda = 'mxp' then (a.c - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.c - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as '90 Dias' ,
+
+case when a.moneda = 'mxp' then (a.d - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.d - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as '120 Dias',
+
+case when a.moneda = 'mxp' then (a.e - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.e - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as ' Mas de 120 Dias' ,
+
+coalesce(case when a.moneda = 'mxp' then (a.vencer - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.vencer - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc /a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then ( a.a - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.a - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then ( a.b - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.b - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio) ,0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then (a.c - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.c - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then (a.d - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.d - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then (a.e - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.e - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end,0) as 'Saldo'
+
+FROM
+
+(SELECT T0.[DocCur] as 'Moneda',
+
+T0.CardCode as 'Cliente' ,
+
+T0.CardName ,
+
+T1.GroupNum,
+
+T0.[DocRate] as 'Tcambio' ,
+
+case WHEN T0.[DocCur] <> 'MXP' THEN ((T0.[DocTotal]-PaidSys )* T0.[DocRate])
+
+ELSE T0.DocTotal-PaidSys END as 'Total' ,
+
+null as 'Pagado',
+
+-- Notas de Credito
+
+null as 'nc' ,
+
+(SELECT sum(T0x.[ReconSum]) FROM ITR1 T0x INNER JOIN OITR T1x ON T0x.ReconNum = T1x.ReconNum
+
+WHERE T0x.[SrcObjTyp] = 13 and T0x.[SrcObjAbs] = T0.docentry and T1x.IsCard='C' AND T1x.[ReconDate] <= @FECHA ) as 'nc_rec' ,
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) < 1 then
+
+case when T0.[DocCur] = 'MXP'
+
+Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys end end as 'vencer ' ,
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 1 and
+
+DATEDIFF(day,T0.DocDueDate , @FECHA) < = 30 then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys
+
+end end as 'a' ,
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 31 and
+
+DATEDIFF(day,T0.DocDueDate , @FECHA) < = 60
+
+then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys end end as 'b ',
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 61 and
+
+DATEDIFF(day,T0.DocDueDate , @FECHA) < = 90
+
+then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-Paidsys ELSE T0.[DocTotal]-paidsys end end as 'c',
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 91 and
+
+DATEDIFF(day,T0.DocDueDate , @FECHA ) < = 120
+
+then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys end end as 'd',
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 121
+
+then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys end end as 'e '
+
+FROM OINV T0 INNER JOIN OCRD T1 ON T0.CardCode = T1.CardCode
+
+INNER JOIN OSLP T2 ON T0.SlpCode = T2.SlpCode
+
+WHERE T0.DocDate <= @FECHA
+
+) a
+
+LEFT JOIN
+
+--- Saldo Polizas
+
+(select z.Saldo as 'PSaldo',
+
+z.PCliente ,
+
+x.PPagos,
+
+(z.Saldo + coalesce(x.PPagos,0)) as 'Saldo'
+
+from
+
+(SELECT SUM(T0.[Credit]) AS 'Saldo',
+
+T0.[ShortName] AS 'PCliente'
+
+FROM JDT1 T0 INNER JOIN OJDT T1 ON T0.TransId = T1.TransId, OCRD T2
+
+WHERE T1.[TransType] = 30 and T0.[ShortName] = T2.[CardCode]
+
+and T2.[CardType] = 'S' AND T0.[Debit] >= 1
+
+--AND ( T0.[MthDate] IS NULL OR T0.[MthDate] > @FECHA )
+
+and T0.[RefDate] <= @FECHA
+
+GROUP BY T0.[ShortName] ) z
+
+left join
+
+(SELECT SUM(T11.[SumApplied])AS 'PPagos' ,
+
+T10.[CardCode] as 'PPCliente'
+
+FROM ORCT T10 INNER JOIN RCT2 T11 ON T10.DocEntry = T11.DocNum
+
+WHERE T11.[InvType] = 30 and T10.[Canceled] = 'n'
+
+AND T11.[SumApplied] <= -1 AND T10.DocDate <= @FECHA
+
+GROUP BY T10.[CardCode]) x
+
+ON Z.PCliente = x.PPCliente
+
+) b
+
+ON a.Cliente = b.PCliente
+
+WHERE (a.Total - coalesce(a.Pagado,0) - coalesce(a.nc,0) - coalesce(a.nc_rec,0) ) >= 0.30
+
+order by 1,4
+
+_____====4====
+
+
+DECLARE @FECHA AS DATETIME
+
+DECLARE @CLIENTE AS VARCHAR (100)
+
+DECLARE @VENDEDOR AS VARCHAR (50)
+
+DECLARE @MONEDA AS VARCHAR (5)
+
+SELECT @FECHA = T0.[DocDate] FROM OINV T0 WHERE T0.DocDate =getdate()
+
+SET @FECHA = CONVERT(DATETIME, getdate(), 112)
+
+SET @FECHA = CONVERT(DATETIME, @FECHA, 112)
+
+SET @VENDEDOR = ' '
+
+SET @MONEDA = ' '
+
+SELECT a.Cliente,
+
+a.CardName,
+
+case when a.moneda = 'mxp' then a.Total else a.Total / a.Tcambio end as 'Total' ,
+
+case when a.moneda = 'mxp' then (a.vencer - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.vencer - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc /a.Tcambio),0) + coalesce((a.nc_rec /a.Tcambio),0) ) ) end as 'Al Corriente',
+
+case when a.moneda = 'mxp' then ( a.a - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.a - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as '30 Dias' ,
+
+case when a.moneda = 'mxp' then ( a.b - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.b - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio) ,0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as '60 Dias',
+
+case when a.moneda = 'mxp' then (a.c - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.c - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as '90 Dias' ,
+
+case when a.moneda = 'mxp' then (a.d - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.d - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as '120 Dias',
+
+case when a.moneda = 'mxp' then (a.e - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.e - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end as ' Mas de 120 Dias' ,
+
+coalesce(case when a.moneda = 'mxp' then (a.vencer - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.vencer - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc /a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then ( a.a - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.a - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then ( a.b - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.b - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio) ,0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then (a.c - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.c - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then (a.d - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.d - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end ,
+
+case when a.moneda = 'mxp' then (a.e - (coalesce(a.Pagado,0)+ coalesce(a.nc,0) + coalesce(a.nc_rec,0)) ) else ( a.e - (coalesce((a.Pagado / a.Tcambio) ,0) + coalesce((a.nc / a.Tcambio),0)+ coalesce((a.nc_rec /a.Tcambio),0)) ) end,0) as 'Saldo'
+
+FROM
+
+(SELECT T0.[DocCur] as 'Moneda',
+
+T0.CardCode as 'Cliente' ,
+
+T0.CardName ,
+
+T1.GroupNum,
+
+T0.[DocRate] as 'Tcambio' ,
+
+case WHEN T0.[DocCur] <> 'MXP' THEN ((T0.[DocTotal]-PaidSys )* T0.[DocRate])
+
+ELSE T0.DocTotal-PaidSys END as 'Total' ,
+
+null as 'Pagado',
+
+-- Notas de Credito
+
+null as 'nc' ,
+
+(SELECT sum(T0x.[ReconSum]) FROM ITR1 T0x INNER JOIN OITR T1x ON T0x.ReconNum = T1x.ReconNum
+
+WHERE T0x.[SrcObjTyp] = 13 and T0x.[SrcObjAbs] = T0.docentry and T1x.IsCard='C' AND T1x.[ReconDate] <= @FECHA ) as 'nc_rec' ,
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) < 1 then
+
+case when T0.[DocCur] = 'MXP'
+
+Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys end end as 'vencer ' ,
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 1 and
+
+DATEDIFF(day,T0.DocDueDate , @FECHA) < = 30 then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys
+
+end end as 'a' ,
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 31 and
+
+DATEDIFF(day,T0.DocDueDate , @FECHA) < = 60
+
+then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys end end as 'b ',
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 61 and
+
+DATEDIFF(day,T0.DocDueDate , @FECHA) < = 90
+
+then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-Paidsys ELSE T0.[DocTotal]-paidsys end end as 'c',
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 91 and
+
+DATEDIFF(day,T0.DocDueDate , @FECHA ) < = 120
+
+then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys end end as 'd',
+
+case when DATEDIFF(day,T0.DocDueDate , @FECHA) >= 121
+
+then case when T0.[DocCur] = 'MXP' Then T0.DocTotal-paidsys ELSE T0.[DocTotal]-paidsys end end as 'e '
+
+FROM OINV T0 INNER JOIN OCRD T1 ON T0.CardCode = T1.CardCode
+
+INNER JOIN OSLP T2 ON T0.SlpCode = T2.SlpCode
+
+WHERE T0.DocDate <= @FECHA
+
+) a
+
+LEFT JOIN
+
+--- Saldo Polizas
+
+(select z.Saldo as 'PSaldo',
+
+z.PCliente ,
+
+x.PPagos,
+
+(z.Saldo + coalesce(x.PPagos,0)) as 'Saldo'
+
+from
+
+(SELECT SUM(T0.[Credit]) AS 'Saldo',
+
+T0.[ShortName] AS 'PCliente'
+
+FROM JDT1 T0 INNER JOIN OJDT T1 ON T0.TransId = T1.TransId, OCRD T2
+
+WHERE T1.[TransType] = 30 and T0.[ShortName] = T2.[CardCode]
+
+and T2.[CardType] = 'S' AND T0.[Debit] >= 1
+
+--AND ( T0.[MthDate] IS NULL OR T0.[MthDate] > @FECHA )
+
+and T0.[RefDate] <= @FECHA
+
+GROUP BY T0.[ShortName] ) z
+
+left join
+
+(SELECT SUM(T11.[SumApplied])AS 'PPagos' ,
+
+T10.[CardCode] as 'PPCliente'
+
+FROM ORCT T10 INNER JOIN RCT2 T11 ON T10.DocEntry = T11.DocNum
+
+WHERE T11.[InvType] = 30 and T10.[Canceled] = 'n'
+
+AND T11.[SumApplied] <= -1 AND T10.DocDate <= @FECHA
+
+GROUP BY T10.[CardCode]) x
+
+ON Z.PCliente = x.PPCliente
+
+) b
+
+ON a.Cliente = b.PCliente
+
+WHERE (a.Total - coalesce(a.Pagado,0) - coalesce(a.nc,0) - coalesce(a.nc_rec,0) ) >= 0.30
+
+order by 1,4

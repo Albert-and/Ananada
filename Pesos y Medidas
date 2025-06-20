@@ -1,0 +1,38 @@
+SELECT
+d.ItemCode as "SKU",
+d.SWeight1 as "Peso",
+d.SWidth1 as "Ancho",
+d.SLength1 as "Longitud",
+d.SHeight1 as "Alto",
+d.UgpEntry as "Tipo",
+h.OnHand as "Existencia"
+FROM OITM d
+INNER JOIN OITW h ON d.ItemCode = h.ItemCode
+Where h.OnHand > 1 AND h.WhsCode = 'ALPC'
+
+
+
+
+SELECT
+d.ItemCode,
+d.SLen1Unit,
+d.SWdth1Unit,
+d.SHght1Unit,
+d.SWght1Unit,
+d.UgpEntry,
+d.SLength1,d.SWeight1,d.SWidth1,d.SVolume,
+h.OnHand
+FROM OITM d
+INNER JOIN OITW h ON d.ItemCode = h.ItemCode
+WHERE h.OnHand > 12 and d.UgpEntry = 1 AND h.WhsCode = 'ALPC'
+
+
+Select
+d.ItemCode,
+d.ItemName,
+d.SWidth1,
+d.SWeight1,
+d.OnHand
+FROM OITM d 
+INNER JOIN OITW c ON c.ItemCode = d.ItemCode
+Where c.WhsCode = 'ALPC' AND d.SWeight1 = 0 AND c.OnHand > 1

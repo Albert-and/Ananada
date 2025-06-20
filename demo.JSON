@@ -1,0 +1,357 @@
+{
+    "DocEntry": "",
+    "IdMagento": "000015749",
+    "codigoSN": "124024",
+    "DocEntryOfertaSAP": null,
+    "fechaContabilizacion": "2023-11-19",
+    "fechaVencimiento": "2023-11-19",
+    "fechaReferencia": "2023-11-19",
+    "referencia": "000015749",
+    "comentarios": "Tiendas de Conveniencia / Mercado Pago | ",
+    "moneda": "MXN",
+    "metodoPago": "06",
+    "formaPago": "",
+    "usoCfdi": "G01",
+    "rfc": "",
+    "fletera": "2",
+    "seFactura": "N",
+    "cuentaBanco": "",
+    "razonSocial": "",
+    "idDirEntrega": "RB1 (madero",
+    "idDirFacturacion": "SALT5",
+    "costoEnvio": 0,
+    "serie": null,
+    "email": "ene.rivera15@gmail.com",
+    "storeId": null,
+    "estatusOV": null,
+    "partidas": [
+        {
+            "idPartida": "1",
+            "idArticulo": "29701",
+            "importeUnitarioSinImp": 6.68,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "2",
+            "idArticulo": "41104",
+            "importeUnitarioSinImp": 12.61,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "3",
+            "idArticulo": "35168",
+            "importeUnitarioSinImp": 4.95,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "4",
+            "idArticulo": "41100",
+            "importeUnitarioSinImp": 13.52,
+            "cantidad": 6,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "5",
+            "idArticulo": "47710",
+            "importeUnitarioSinImp": 8.85,
+            "cantidad": 10,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "6",
+            "idArticulo": "37590",
+            "importeUnitarioSinImp": 13.51,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "7",
+            "idArticulo": "50198",
+            "importeUnitarioSinImp": 15.36,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "8",
+            "idArticulo": "67999",
+            "importeUnitarioSinImp": 20.26,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "9",
+            "idArticulo": "1009007",
+            "importeUnitarioSinImp": 24.5,
+            "cantidad": 3,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "10",
+            "idArticulo": "1009004",
+            "importeUnitarioSinImp": 24.51,
+            "cantidad": 2,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "11",
+            "idArticulo": "55471",
+            "importeUnitarioSinImp": 18.17,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "12",
+            "idArticulo": "20089",
+            "importeUnitarioSinImp": 6.03,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "13",
+            "idArticulo": "52951",
+            "importeUnitarioSinImp": 12.96,
+            "cantidad": 4,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "14",
+            "idArticulo": "40557",
+            "importeUnitarioSinImp": 5.06,
+            "cantidad": 24,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "15",
+            "idArticulo": "38836",
+            "importeUnitarioSinImp": 2.8,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "16",
+            "idArticulo": "21803",
+            "importeUnitarioSinImp": 8.27,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "17",
+            "idArticulo": "23727",
+            "importeUnitarioSinImp": 5.68,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "18",
+            "idArticulo": "45915",
+            "importeUnitarioSinImp": 18.17,
+            "cantidad": 24,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "19",
+            "idArticulo": "10772",
+            "importeUnitarioSinImp": 4.17,
+            "cantidad": 100,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "20",
+            "idArticulo": "10771",
+            "importeUnitarioSinImp": 4.17,
+            "cantidad": 150,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "21",
+            "idArticulo": "31725",
+            "importeUnitarioSinImp": 4.3,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "22",
+            "idArticulo": "31724",
+            "importeUnitarioSinImp": 4.3,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "23",
+            "idArticulo": "7669",
+            "importeUnitarioSinImp": 8.07,
+            "cantidad": 48,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "24",
+            "idArticulo": "40954",
+            "importeUnitarioSinImp": 7.43,
+            "cantidad": 18,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "25",
+            "idArticulo": "31723",
+            "importeUnitarioSinImp": 4.3,
+            "cantidad": 24,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "26",
+            "idArticulo": "35719",
+            "importeUnitarioSinImp": 18.88,
+            "cantidad": 36,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "27",
+            "idArticulo": "10877",
+            "importeUnitarioSinImp": 8.07,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "28",
+            "idArticulo": "22194",
+            "importeUnitarioSinImp": 2.37,
+            "cantidad": 24,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "29",
+            "idArticulo": "33961",
+            "importeUnitarioSinImp": 7.3,
+            "cantidad": 24,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "30",
+            "idArticulo": "41639",
+            "importeUnitarioSinImp": 12.95,
+            "cantidad": 48,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "31",
+            "idArticulo": "45917",
+            "importeUnitarioSinImp": 18.17,
+            "cantidad": 12,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "32",
+            "idArticulo": "14160",
+            "importeUnitarioSinImp": 5.04,
+            "cantidad": 30,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "33",
+            "idArticulo": "33654",
+            "importeUnitarioSinImp": 5.04,
+            "cantidad": 30,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "34",
+            "idArticulo": "42587",
+            "importeUnitarioSinImp": 5.04,
+            "cantidad": 30,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "35",
+            "idArticulo": "11131",
+            "importeUnitarioSinImp": 4.4,
+            "cantidad": 42,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "36",
+            "idArticulo": "10428",
+            "importeUnitarioSinImp": 4.61,
+            "cantidad": 144,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "37",
+            "idArticulo": "31722",
+            "importeUnitarioSinImp": 4.3,
+            "cantidad": 60,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "38",
+            "idArticulo": "51548",
+            "importeUnitarioSinImp": 20.8,
+            "cantidad": 3,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "39",
+            "idArticulo": "55427",
+            "importeUnitarioSinImp": 130.58,
+            "cantidad": 1,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "40",
+            "idArticulo": "61888",
+            "importeUnitarioSinImp": 24.77,
+            "cantidad": 1,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        },
+        {
+            "idPartida": "41",
+            "idArticulo": "63052",
+            "importeUnitarioSinImp": 13.08,
+            "cantidad": 5,
+            "codigoImpuesto": "IVAC16",
+            "almacen": null
+        }
+    ]
+}
